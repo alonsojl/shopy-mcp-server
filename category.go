@@ -25,6 +25,9 @@ func (s *MCPServer) HandleGetCategories(ctx context.Context, request mcp.CallToo
 		Category{ID: 8, Name: "Category 8"},
 		Category{ID: 9, Name: "Category 9"},
 		Category{ID: 10, Name: "Category 10"},
+		Category{ID: 11, Name: "Category 11"},
+		Category{ID: 12, Name: "Category 12"},
+		Category{ID: 13, Name: "Category 13"},
 	}
 	result, err := json.Marshal(categories)
 	if err != nil {
