@@ -45,6 +45,11 @@ run: build ## Run application.
 live:  ## Live reload for Go applications.
 	@air -c .air.toml
 
+
+.PHONY: inspector
+inspector: ## Open modelcontext inspector.
+	@npx @modelcontextprotocol/inspector
+
 .PHONY: tools
 tools: ## Install tools.
 	@go install github.com/air-verse/air@v1.61.7
