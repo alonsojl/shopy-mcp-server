@@ -2,29 +2,23 @@ package shopy
 
 import (
 	"log/slog"
-	"net/http"
-	"time"
 
 	"github.com/mark3labs/mcp-go/server"
 )
-
-const defaultTimeout = 3 * time.Second
 
 type MCPServer struct {
 	server     *server.MCPServer
 	logger     *slog.Logger
 	url        string
-	httpClient *http.Client
+	httpClient *HTTPClient
 }
 
 func NewMCPServer(server *server.MCPServer, url string, logger *slog.Logger) *MCPServer {
 	return &MCPServer{
-		server: server,
-		logger: logger,
-		url:    url,
-		httpClient: &http.Client{
-			Timeout: defaultTimeout,
-		},
+		server:     server,
+		logger:     logger,
+		url:        url,
+		httpClient: NewHTTPClient(),
 	}
 }
 
