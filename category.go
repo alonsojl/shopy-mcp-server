@@ -3,35 +3,49 @@ package shopy
 import (
 	"context"
 	"encoding/json"
+	"net/http"
 
 	"github.com/mark3labs/mcp-go/mcp"
 )
 
 type Categories []Category
 type Category struct {
-	ID   int    `json:"id"`
+	UUID string `json:"uuid"`
 	Name string `json:"name"`
 }
 
 func (s *MCPServer) HandleGetCategories(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-	categories := Categories{
-		Category{ID: 1, Name: "Category 1"},
-		Category{ID: 2, Name: "Category 2"},
-		Category{ID: 3, Name: "Category 3"},
-		Category{ID: 4, Name: "Category 4"},
-		Category{ID: 5, Name: "Category 5"},
-		Category{ID: 6, Name: "Category 6"},
-		Category{ID: 7, Name: "Category 7"},
-		Category{ID: 8, Name: "Category 8"},
-		Category{ID: 9, Name: "Category 9"},
-		Category{ID: 10, Name: "Category 10"},
-		Category{ID: 11, Name: "Category 11"},
-		Category{ID: 12, Name: "Category 12"},
-		Category{ID: 13, Name: "Category 13"},
-	}
-	result, err := json.Marshal(categories)
+	var (
+		method = http.MethodGet
+		url    = s.url + "/v1/categories"
+	)
+
+	req, err := http.NewRequest(method, url, nil)
 	if err != nil {
-		return nil, err
+		return mcp.NewToolResultError(err.Error()), nil
 	}
-	return mcp.NewToolResultText(string(result)), nil
+
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := s.httpClient.Do(req)
+	if err != nil {
+		return mcp.NewToolResultError(err.Error()), nil
+	}
+	defer resp.Body.Close()
+
+	var response struct {
+		Categories Categories `json:"categories"`
+	}
+
+	err = json.NewDecoder(resp.Body).Decode(&response)
+	if err != nil {
+		return mcp.NewToolResultError(err.Error()), nil
+	}
+
+	data, err := json.Marshal(response)
+	if err != nil {
+		return mcp.NewToolResultError(err.Error()), nil
+	}
+
+	return mcp.NewToolResultText(string(data)), nil
 }

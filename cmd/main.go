@@ -11,18 +11,16 @@ import (
 )
 
 func main() {
-	server := server.NewMCPServer(
-		"Shopy",
-		"1.0.0",
-		server.WithToolCapabilities(false),
+	var (
+		url    = os.Getenv("SHOPY_URL")
+		server = server.NewMCPServer("Shopy", "1.0.0", server.WithToolCapabilities(false))
+		logger = slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
+			Level:     slog.LevelInfo,
+			AddSource: false,
+		}))
+		srv = shopy.NewMCPServer(server, url, logger)
 	)
 
-	logger := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
-		Level:     slog.LevelInfo,
-		AddSource: false,
-	}))
-
-	srv := shopy.NewMCPServer(server, logger)
 	if err := srv.Run().WithHTTP(); err != nil {
 		log.Fatal(err)
 	}
