@@ -22,7 +22,7 @@ func (s *MCPServer) HandleGetCategories(ctx context.Context, request mcp.CallToo
 		}
 	)
 
-	data, err := s.httpClient.NewRequest(method, url, nil).Decode(&response)
+	data, err := s.httpClient.NewRequest(ctx, method, url, nil).Decode(&response)
 	if err != nil {
 		s.logger.Error("http client request", "error", err)
 		return mcp.NewToolResultError(err.Error()), nil
